@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import './Register.css'
+import { useNavigate } from 'react-router-dom'
+import { registerURL } from '../../utils/Constants'
+import axios from '../../axios/Axios'
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -11,6 +14,8 @@ function Register() {
         confirm_password: ''
     })
     const [error, setError] = useState({})
+    const [serverError, setServerError] = useState()
+    const navigate = useNavigate()
   
     const handleChange = (e) => {
       const {name, value} = e.target
@@ -21,9 +26,43 @@ function Register() {
   
     const handleSubmit = (e) => {
       e.preventDefault()
+      setServerError()
       if (formValidate()) {
         setError({})
-        console.log(formData)
+        axios
+        .post(
+          registerURL,
+          JSON.stringify(formData)
+        )
+        .then((res) => {
+        
+          setFormData({
+            first_name: "",
+            last_name: "",
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          });
+          navigate("/login", { replace: true });
+        })
+        .catch((err) => {          
+          if (err.code === "ERR_NETWORK") {
+            setServerError("Network error. Please check after some time.");
+          } else if (err.response.status === 400) {
+            if (err.response.data.username) {
+              setServerError(err.response.data.username);
+            }
+
+            if (err.response.data.email) {
+              setServerError(err.response.data.email);
+            }
+
+            if (err.response.data.password) {
+              setServerError(err.response.data.password);
+            }
+          }
+        });
       }
     }
   
@@ -85,66 +124,69 @@ function Register() {
       return is_valid
     }
   return (
-    <div class="register_container" >
+    <div className="register_container" >
         <h1>Create to your account 👏</h1>
-        <div class="social-login">
+        <div className="social-login">
 
         </div>
-        <div class="divider">
-            <div class="line"></div>
+        <div className="divider">
+            <div className="line"></div>
         </div>
 
         <form onSubmit={handleSubmit}>
             <div style={{display:'flex', justifyContent:'space-between', gap:'7px'}}>
                 <div>
                     <label for="first_name">First Name:</label>
-                    <div class="custome-input">
-                        <input onChange={handleChange} type="text" name="first_name" id="first_name" placeholder="Your Firstname" autocomplete="off" />
-                        <i class='bx bx-at'></i>
+                    <div className="custome-input">
+                        <input onChange={handleChange} type="text" name="first_name" id="first_name" placeholder="Your Firstname" autoComplete="off" />
+                        <i className='bx bx-at'></i>
                         {error.first_name && <span className='register_error'>{error.first_name}</span>}
                     </div>
                 </div>
                 <div>
                     <label for="last_name">Last Name:</label>
-                    <div class="custome-input">
-                        <input onChange={handleChange} type="text" name="last_name" id="last_name" placeholder="Your Lastname" autocomplete="off" />
-                        <i class='bx bx-at'></i>
+                    <div className="custome-input">
+                        <input onChange={handleChange} type="text" name="last_name" id="last_name" placeholder="Your Lastname" autoComplete="off" />
+                        <i className='bx bx-at'></i>
                         {error.last_name && <span className='register_error'>{error.last_name}</span>}
                     </div>
                 </div>
             </div>
             <label for="username">Username:</label>
-            <div class="custome-input">
-                <input onChange={handleChange} type="username" name="username" placeholder="Your username" autocomplete="off" />
-                <i class='bx bx-at'></i>
+            <div className="custome-input">
+                <input onChange={handleChange} type="username" name="username" placeholder="Your username" autoComplete="off" />
+                <i className='bx bx-at'></i>
                 {error.username && <span className='register_error'>{error.username}</span>}
             </div>
             <label for="email">Email:</label>
-            <div class="custome-input">
-                <input onChange={handleChange} type="text" name="email" placeholder="Your Email" autocomplete="off" />
-                <i class='bx bx-at'></i>
+            <div className="custome-input">
+                <input onChange={handleChange} type="text" name="email" placeholder="Your Email" autoComplete="off" />
+                <i className='bx bx-at'></i>
                 {error.email && <span className='register_error'>{error.email}</span>}
             </div>
             <div style={{display:'flex', justifyContent:'space-between', gap:'7px'}}>
                 <div>
                     <label for="password">Password:</label>
-                    <div class="custome-input">
+                    <div className="custome-input">
                         <input onChange={handleChange} type="password" name="password" placeholder="Your Password" />
-                        <i class='bx bx-lock-alt'></i>
+                        <i className='bx bx-lock-alt'></i>
                         {error.password && <span className='register_error'>{error.password}</span>}
                     </div>
                 </div>
                 <div>
                     <label for="confirm_password">Confirm Password:</label>
-                    <div class="custome-input">
+                    <div className="custome-input">
                         <input onChange={handleChange} type="password" name="confirm_password" placeholder="Confirm Pass..." />
-                        <i class='bx bx-lock-alt'></i>
+                        <i className='bx bx-lock-alt'></i>
                         {error.confirm_password && <span className='register_error'>{error.confirm_password}</span>}
                     </div>
                 </div>
             </div>
-            <button class="register">Register</button>
-            <div class="links" style={{marginBottom: '10px'}}>
+            <button className="register">Register</button>
+            {serverError && <div className='server_error'>
+                <p>{serverError}</p>
+            </div>}
+            <div className="links" style={{marginBottom: '10px'}}>
                 <a href="#">Already have an account?</a>
             </div>
         </form>

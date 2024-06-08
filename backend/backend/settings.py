@@ -135,11 +135,13 @@ CORS_ALLOWED_ORIGINS = [
 # CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_SECURE = False # Change to True for deployement
+CSRF_COOKIE_SECURE = True # Change to True for deployement
 CSRF_COOKIE_HTTP_ONLY = True
+
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000'
 ]
+
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
@@ -181,7 +183,7 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_REFRESH': 'refresh',
     'AUTH_COOKIE_DOMAIN': None,
     
-    'AUTH_COOKIE_SECURE': False, # Whether the auth cookies should be secure (https:// only). Change to True for deployement
+    'AUTH_COOKIE_SECURE': True, # Whether the auth cookies should be secure (https:// only)
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
     # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.

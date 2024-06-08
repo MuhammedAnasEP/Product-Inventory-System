@@ -1,18 +1,18 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
 
-    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
     
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'password', 'confirm_password')
         extra_kwargs = {
             'first_name' : {'required': True},
             'last_name' : {'required': True},
             'password' : {'write_only': True},
-            'password2' : {'write_only': True},
+            'confirm_password' : {'write_only': True},
         }
 
     def save(self):
@@ -31,13 +31,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         email=self.validated_data['email']
         password = self.validated_data['password']
-        password2 = self.validated_data['password2']
+        confirm_password = self.validated_data['confirm_password']
 
         if User.objects.filter(email=email):
             raise serializers.ValidationError(
                 {'email': 'A user with that email already exists.'})
 
-        if password != password2:
+        if password != confirm_password:
             raise serializers.ValidationError(
                 {'password': 'Passwords do not match!'})
 

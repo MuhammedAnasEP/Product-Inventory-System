@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
 import './Login.css'
-
+import { useNavigate } from 'react-router-dom'
+import { loginURL } from '../../utils/Constants'
+import axios from '../../axios/Axios'
+import useAuth from '../../hooks/useAuth'
 function Login() {
 
   const [formData, setFormData] = useState({username: '', password: ''})
   const [error, setError] = useState({})
+  const [serverError, setServerError] = useState()
+  const navigate = useNavigate()
+  const {setCSRFToken,setAccessToken, accessToken,} = useAuth()
 
   const handleChange = (e) => {
     const {name, value} = e.target
@@ -15,9 +21,29 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setServerError()
     if (formValidate()) {
       setError({})
-      console.log(formData)
+      axios
+        .post(loginURL, JSON.stringify(formData))
+        .then((res) => {
+          setAccessToken(res?.data?.access_token);
+          setCSRFToken(res.headers["x-csrftoken"]);
+          console.log(accessToken,"------")
+          setFormData({
+            username: "",
+            password: "",
+          });
+          navigate('/products', { replace: true });
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.code === "ERR_NETWORK") {
+            setServerError("Network Error");
+          } else if (err.response.status === 401) {
+            setServerError(err.response.data.detail);
+          }
+        });
     }
   }
 
@@ -39,34 +65,36 @@ function Login() {
   }
 
   return (
-    <div class="container">
+    <div className="container">
         <h1>Login to your account 👏</h1>
-        <div class="social-login">
+        <div className="social-login">
 
         </div>
-        <div class="divider">
-            <div class="line"></div>
+        <div className="divider">
+            <div className="line"></div>
         </div>
 
         <form onSubmit={handleSubmit}>
             <label for="username">Username:</label>
-            <div class="custome-input">
-                <input onChange={handleChange} type="username" name="username" placeholder="Your username" autocomplete="off" />
-                <i class='bx bx-at'></i>
+            <div className="custome-input">
+                <input onChange={handleChange} type="username" name="username" placeholder="Your username" autoComplete="off" />
+                <i className='bx bx-at'></i>
                 {error.username && <span className='login_error'>{error.username}</span>}
             </div>
             <label for="password">Password:</label>
-            <div class="custome-input">
+            <div className="custome-input">
                 <input onChange={handleChange} type="password" name="password" placeholder="Your Password" />
-                <i class='bx bx-lock-alt'></i>
+                <i className='bx bx-lock-alt'></i>
                 {error.password && <span className='login_error'>{error.password}</span>}
             </div>
-            <button class="login">Login</button>
-            <div class="links">
+            <button className="login">Login</button>
+            {serverError && <div className='server_error'>
+                <p>{serverError}</p>
+            </div>}
+            <div className="links">
                 <a href="#">Don't have an account?</a>
             </div>
         </form>
-
     </div>
   )
 }

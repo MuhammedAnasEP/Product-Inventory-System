@@ -2,15 +2,13 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework_simplejwt import tokens, exceptions as jwt_exceptions
-from django.conf import settings
 from django.contrib.auth import authenticate
 from django.middleware import csrf
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import AuthenticationFailed, ParseError
-from rest_framework_simplejwt.serializers import TokenRefreshSerializer
-from rest_framework_simplejwt.views import TokenRefreshView
-from .serializers import RegistrationSerializer, LoginSerializer
+from django.conf import settings
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt import tokens, serializers as jwt_serializers, views as jwt_views, exceptions as jwt_exceptions
+from .serializers import RegisterSerializer, LoginSerializer
 
 # Create your views here.
 
@@ -31,7 +29,7 @@ class RegisterView(APIView):
     If the data is not valid, return the error message.
     """
     def post(self, request):
-        serializer = RegistrationSerializer(data=request.data)
+        serializer = RegisterSerializer(data=request.data)
         
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
@@ -111,13 +109,10 @@ class LogoutView(APIView):
         except:
             raise ParseError("Invalid token")
 
-class CookieTokenRefreshSerializer(TokenRefreshSerializer):
+class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
     refresh = None
 
     def validate(self, attrs):
-        """
-        Validates the attributes of the serializer.
-        """
         attrs['refresh'] = self.context['request'].COOKIES.get('refresh')
         if attrs['refresh']:
             return super().validate(attrs)
@@ -126,16 +121,10 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
                 'No valid token found in cookie \'refresh\'')
 
 
-class CookieTokenRefreshView(TokenRefreshView):
+class CookieTokenRefreshView(jwt_views.TokenRefreshView):
     serializer_class = CookieTokenRefreshSerializer
 
     def finalize_response(self, request, response, *args, **kwargs):
-        """
-        Finalize the response by setting the 'refresh' cookie if it exists in the response data.
-        If the 'refresh' cookie exists, it is set in the response with the appropriate expiration time,
-        secure, httponly, and samesite attributes. The 'refresh' key is then deleted from the response data.
-        The 'X-CSRFToken' header is set to the value of the 'csrftoken' cookie.
-        """
         if response.data.get("refresh"):
             response.set_cookie(
                 key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
@@ -149,4 +138,3 @@ class CookieTokenRefreshView(TokenRefreshView):
             del response.data["refresh"]
         response["X-CSRFToken"] = request.COOKIES.get("csrftoken")
         return super().finalize_response(request, response, *args, **kwargs)
-    
