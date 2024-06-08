@@ -17,6 +17,7 @@ class Products(models.Model):
     Active = models.BooleanField(default=True)    
     HSNCode = models.CharField(max_length=255, blank=True, null=True)    
     TotalStock = models.DecimalField(default=0.00, max_digits=20, decimal_places=8, blank=True, null=True)
+    Price = models.DecimalField(default=0.00, max_digits=20, decimal_places=2, blank=True, null=True)
   
     class Meta:
         db_table = "products_product"
