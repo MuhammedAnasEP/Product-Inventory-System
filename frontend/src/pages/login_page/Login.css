@@ -113,9 +113,9 @@ body{
     background: #5222fd;
 }
 
-span {
+.login_error {
     color: #e74c3c;
-    font-size: 14px;
+    font-size: 13px;
     margin-top: 5px;
     display: block;
 }

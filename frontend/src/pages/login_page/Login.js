@@ -53,13 +53,13 @@ function Login() {
             <div class="custome-input">
                 <input onChange={handleChange} type="username" name="username" placeholder="Your username" autocomplete="off" />
                 <i class='bx bx-at'></i>
-                {error.username && <span>{error.username}</span>}
+                {error.username && <span className='login_error'>{error.username}</span>}
             </div>
             <label for="password">Password:</label>
             <div class="custome-input">
                 <input onChange={handleChange} type="password" name="password" placeholder="Your Password" />
                 <i class='bx bx-lock-alt'></i>
-                {error.password && <span>{error.password}</span>}
+                {error.password && <span className='login_error'>{error.password}</span>}
             </div>
             <button class="login">Login</button>
             <div class="links">

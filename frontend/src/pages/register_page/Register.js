@@ -85,8 +85,8 @@ function Register() {
       return is_valid
     }
   return (
-    <div class="container" >
-        <h1 style={{marginTop: '200px'}}>Create to your account 👏</h1>
+    <div class="register_container" >
+        <h1>Create to your account 👏</h1>
         <div class="social-login">
 
         </div>
@@ -95,44 +95,55 @@ function Register() {
         </div>
 
         <form onSubmit={handleSubmit}>
-            <label for="first_name">First Name:</label>
-            <div class="custome-input">
-                <input onChange={handleChange} type="text" name="first_name" id="first_name" placeholder="Your Firstname" autocomplete="off" />
-                <i class='bx bx-at'></i>
-                {error.first_name && <span>{error.first_name}</span>}
-            </div>
-            <label for="last_name">Last Name:</label>
-            <div class="custome-input">
-                <input onChange={handleChange} type="text" name="last_name" id="last_name" placeholder="Your Lastname" autocomplete="off" />
-                <i class='bx bx-at'></i>
-                {error.last_name && <span>{error.last_name}</span>}
+            <div style={{display:'flex', justifyContent:'space-between', gap:'7px'}}>
+                <div>
+                    <label for="first_name">First Name:</label>
+                    <div class="custome-input">
+                        <input onChange={handleChange} type="text" name="first_name" id="first_name" placeholder="Your Firstname" autocomplete="off" />
+                        <i class='bx bx-at'></i>
+                        {error.first_name && <span className='register_error'>{error.first_name}</span>}
+                    </div>
+                </div>
+                <div>
+                    <label for="last_name">Last Name:</label>
+                    <div class="custome-input">
+                        <input onChange={handleChange} type="text" name="last_name" id="last_name" placeholder="Your Lastname" autocomplete="off" />
+                        <i class='bx bx-at'></i>
+                        {error.last_name && <span className='register_error'>{error.last_name}</span>}
+                    </div>
+                </div>
             </div>
             <label for="username">Username:</label>
             <div class="custome-input">
                 <input onChange={handleChange} type="username" name="username" placeholder="Your username" autocomplete="off" />
                 <i class='bx bx-at'></i>
-                {error.username && <span>{error.username}</span>}
+                {error.username && <span className='register_error'>{error.username}</span>}
             </div>
             <label for="email">Email:</label>
             <div class="custome-input">
                 <input onChange={handleChange} type="text" name="email" placeholder="Your Email" autocomplete="off" />
                 <i class='bx bx-at'></i>
-                {error.email && <span>{error.email}</span>}
+                {error.email && <span className='register_error'>{error.email}</span>}
             </div>
-            <label for="password">Password:</label>
-            <div class="custome-input">
-                <input onChange={handleChange} type="password" name="password" placeholder="Your Password" />
-                <i class='bx bx-lock-alt'></i>
-                {error.password && <span>{error.password}</span>}
+            <div style={{display:'flex', justifyContent:'space-between', gap:'7px'}}>
+                <div>
+                    <label for="password">Password:</label>
+                    <div class="custome-input">
+                        <input onChange={handleChange} type="password" name="password" placeholder="Your Password" />
+                        <i class='bx bx-lock-alt'></i>
+                        {error.password && <span className='register_error'>{error.password}</span>}
+                    </div>
+                </div>
+                <div>
+                    <label for="confirm_password">Confirm Password:</label>
+                    <div class="custome-input">
+                        <input onChange={handleChange} type="password" name="confirm_password" placeholder="Confirm Pass..." />
+                        <i class='bx bx-lock-alt'></i>
+                        {error.confirm_password && <span className='register_error'>{error.confirm_password}</span>}
+                    </div>
+                </div>
             </div>
-            <label for="confirm_password">Confirm Password:</label>
-            <div class="custome-input">
-                <input onChange={handleChange} type="password" name="confirm_password" placeholder="Your Confirm Password" />
-                <i class='bx bx-lock-alt'></i>
-                {error.confirm_password && <span>{error.confirm_password}</span>}
-            </div>
-            <button class="login">Login</button>
-            {/* {error.confirm_password && <span>{error.confirm_password}</span>} */}
+            <button class="register">Register</button>
             <div class="links" style={{marginBottom: '10px'}}>
                 <a href="#">Already have an account?</a>
             </div>
