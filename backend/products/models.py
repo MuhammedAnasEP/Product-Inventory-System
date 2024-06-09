@@ -26,16 +26,21 @@ class Products(models.Model):
         unique_together = (("ProductCode", "ProductID"),)
         ordering = ("-CreatedDate", "ProductID")
 
-class Varint(models.Model):
+class Variant(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    product = models.ForeignKey(Products, on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='variants')
     name = models.CharField(max_length=255)
     option = models.CharField(max_length=255)
     stock = models.IntegerField(default=0)
-
     class Meta:
-        db_table = "products_variant"
-        verbose_name = "variant"
-        verbose_name_plural = "variants"
-        unique_together = (('product', 'name', 'parent'),)
+        ordering = ("name",)
+
+class SubVariant(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    parent = models.ForeignKey(Variant, on_delete=models.CASCADE, related_name='sub_variants')
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='sub_variants_product')
+    name = models.CharField(max_length=255)
+    option = models.CharField(max_length=255)
+    stock = models.IntegerField(default=0)
+    class Meta:
+        ordering = ("name",)

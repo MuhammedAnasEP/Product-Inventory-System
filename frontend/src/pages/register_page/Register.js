@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './Register.css'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { registerURL } from '../../utils/Constants'
 import axios from '../../axios/Axios'
 
@@ -124,7 +124,7 @@ function Register() {
       return is_valid
     }
   return (
-    <div className="register_container" >
+    <div className="register_container" style={{marginTop:'100px'}}>
         <h1>Create to your account 👏</h1>
         <div className="social-login">
 
@@ -187,7 +187,7 @@ function Register() {
                 <p>{serverError}</p>
             </div>}
             <div className="links" style={{marginBottom: '10px'}}>
-                <a href="#">Already have an account?</a>
+                <a href="#"><Link to='/login'>Already have an account?</Link></a>
             </div>
         </form>
 

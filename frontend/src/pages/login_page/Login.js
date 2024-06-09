@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './Login.css'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { loginURL } from '../../utils/Constants'
 import axios from '../../axios/Axios'
 import useAuth from '../../hooks/useAuth'
@@ -92,7 +92,7 @@ function Login() {
                 <p>{serverError}</p>
             </div>}
             <div className="links">
-                <a href="#">Don't have an account?</a>
+                <a href="#"><Link to='/register'>Don't have an account?</Link></a>
             </div>
         </form>
     </div>

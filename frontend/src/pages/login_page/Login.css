@@ -138,3 +138,13 @@ body{
 .container .links a:hover{
     text-decoration: underline;
 }
+
+.server_error {
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    font-size: 13px;
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}

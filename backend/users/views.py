@@ -10,7 +10,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt import tokens, exceptions as jwt_exceptions
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -86,7 +88,7 @@ class LoginView(APIView):
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def delete(self, request):
         """
         This function is responsible for handling the POST request to logout the user. 
         It first retrieves the refresh token from the request cookies. Then it creates a `RefreshToken` object using the retrieved refresh token.
@@ -99,17 +101,17 @@ class LogoutView(APIView):
                 settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
             token = tokens.RefreshToken(refreshToken)
             token.blacklist()
-
             res = Response()
             res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
             res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
             res.delete_cookie("X-CSRFToken")
             res.delete_cookie("csrftoken")
             res["X-CSRFToken"]=None
-            
             return res
         except:
             raise ParseError("Invalid token")
+
+        
 
 class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     refresh = None
@@ -146,3 +148,18 @@ class CookieTokenRefreshView(TokenRefreshView):
             del response.data["refresh"]
         response["X-CSRFToken"] = request.COOKIES.get("csrftoken")
         return super().finalize_response(request, response, *args, **kwargs)
+
+class UserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Retrieves the user information for the authenticated user.
+        """
+        try:
+            user = User.objects.get(id=request.user.id)
+        except User.DoesNotExist:
+            return Response(status_code=404)
+
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
