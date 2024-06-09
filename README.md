@@ -41,8 +41,7 @@
 
 ## API Endpoints
 
-  None: I used JWT Authentication in all users end point for secruty. And The token is stored in the HTTPOnly Cookie.Use Postman for the checking the api it will or other
-        platforms. And send Token with every request.
+  None: I used JWT Authentication in all users end point for secruty. And The token is stored in the HTTPOnly Cookie.
 
   ### For Authentication
     POST /api/auth/register: Register user for authentication
